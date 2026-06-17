@@ -61,8 +61,10 @@ fun TipTimeLayoutPreview() {
 @Composable
 fun TipTimeLayout() {
     var amountInput by remember { mutableStateOf("") }
+    var tipInput by remember { mutableStateOf("") }
     val amount = amountInput.toDoubleOrNull() ?: 0.0
-    val tip = calculateTip(amount)
+    val tipPercent = tipInput.toDoubleOrNull() ?: 0.0
+    val tip = calculateTip(amount, tipPercent)
 
     Column(
         modifier = Modifier
@@ -76,12 +78,21 @@ fun TipTimeLayout() {
         Text(
             text = stringResource(R.string.calculate_tip),
             modifier = Modifier
-                .padding(bottom = 16.dp, top = 40.dp)
+                .padding(bottom = 16.dp)
                 .align(alignment = Alignment.Start)
         )
         EditNumberField(
             value = amountInput,
             onValueChange = { amountInput = it },
+            label = stringResource(R.string.bill_amount),
+            modifier = Modifier
+                .padding(bottom = 32.dp)
+                .fillMaxWidth()
+        )
+        EditNumberField(
+            value = tipInput,
+            onValueChange = { tipInput = it },
+            label = stringResource(R.string.how_was_the_service),
             modifier = Modifier
                 .padding(bottom = 32.dp)
                 .fillMaxWidth()
@@ -95,13 +106,18 @@ fun TipTimeLayout() {
 }
 
 @Composable
-fun EditNumberField(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier) {
+fun EditNumberField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier
+) {
     TextField(
         value = value,
         onValueChange = onValueChange,
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        label = { Text(stringResource(R.string.bill_amount)) },
+        label = { Text(label) },
         modifier = modifier
     )
 }
